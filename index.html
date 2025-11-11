@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notas de Colores</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <div class="contenedor">
+      <aside class="menu" aria-label="Panel de creación de notas">
+        <button id="botonMas" aria-expanded="false" aria-controls="menuColores"
+          aria-label="Abrir selector de colores">+</button>
+
+        <div class="colores" id="menuColores" role="menu" aria-hidden="true">
+          <div class="color" data-color="#ff7675" style="background-color: #ff7675;" role="menuitem"
+            aria-label="Color rojo claro"></div>
+          <div class="color" data-color="#74b9ff" style="background-color: #74b9ff;" role="menuitem"
+            aria-label="Color azul claro"></div>
+          <div class="color" data-color="#55efc4" style="background-color: #55efc4;" role="menuitem"
+            aria-label="Color verde claro"></div>
+          <div class="color" data-color="#ffeaa7" style="background-color: #ffeaa7;" role="menuitem"
+            aria-label="Color amarillo claro"></div>
+          <div class="color" data-color="#fd79a8" style="background-color: #fd79a8;" role="menuitem"
+            aria-label="Color rosa"></div>
+
+        </div>
+      </aside>
+
+      <section class="notas" id="contenedorNotas" aria-live="polite" aria-label="Notas creadas"></section>
+    </div>
+
+    <script>
+      const botonMas = document.getElementById('botonMas');
+      const menuColores = document.getElementById('menuColores');
+      const contenedorNotas = document.getElementById('contenedorNotas');
+
+      // Alternar menú de colores
+      botonMas.addEventListener('click', () => {
+        const visible = menuColores.classList.toggle('visible');
+        menuColores.setAttribute('aria-hidden', String(!visible));
+        botonMas.setAttribute('aria-expanded', String(visible));
+      });
+
+      // Cerrar menú con Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menuColores.classList.contains('visible')) {
+          menuColores.classList.remove('visible');
+          menuColores.setAttribute('aria-hidden', 'true');
+          botonMas.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Crear nota al seleccionar color
+      menuColores.addEventListener('click', (e) => {
+        if (e.target.classList.contains('color')) {
+          const color = e.target.getAttribute('data-color');
+          crearNota(color);
+          menuColores.classList.remove('visible');
+          menuColores.setAttribute('aria-hidden', 'true');
+          botonMas.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Función para obtener fecha y hora en formato legible
+      function obtenerFechaCompleta() {
+        const ahora = new Date();
+        return ahora.toLocaleString('es-ES', {
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+      }
+
+      // Crear la nota (mejorada: incluye botón eliminar y atributos aria)
+      function crearNota(color) {
+        const nota = document.createElement('div');
+        nota.classList.add('nota');
+        nota.style.backgroundColor = color;
+
+        const fecha = new Date().toLocaleDateString('es-MX', {
+          day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+
+        nota.innerHTML = `
+    <div class="contenido">
+      <p class="fecha">${fecha}</p>
+      <p class="texto" contenteditable="false">Nueva nota...</p>
+      <div class="botones">
+        <button class="editar">Editar</button>
+        <button class="eliminar">Eliminar</button>
+      </div>
+    </div>
+  `;
+
+        const botonEditar = nota.querySelector('.editar');
+        const botonEliminar = nota.querySelector('.eliminar');
+        const texto = nota.querySelector('.texto');
+
+        // Control para saber si ya se borró el texto inicial
+        let textoInicialBorrado = false;
+
+        // Botón editar
+        botonEditar.addEventListener('click', () => {
+          const editable = texto.getAttribute('contenteditable') === 'true';
+          texto.setAttribute('contenteditable', !editable);
+          botonEditar.textContent = editable ? 'Editar' : 'Guardar';
+
+          if (!editable) {
+            // Si es la primera vez que se edita, borra el texto inicial
+            if (!textoInicialBorrado && texto.textContent.trim() === "Nueva nota...") {
+              texto.textContent = "";
+              textoInicialBorrado = true;
+            }
+            texto.focus();
+          }
+        });
+
+        // Botón eliminar
+        botonEliminar.addEventListener('click', () => {
+          nota.remove();
+        });
+
+        contenedorNotas.appendChild(nota);
+      }
+
+
+
+      function placeCaretAtEnd(el) {
+        el.focus();
+        if (typeof window.getSelection !== "undefined" && typeof document.createRange !== "undefined") {
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          range.collapse(false);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    </script>
+  </body>
+
+</html>
+
+
+<!-- El contenido se desborda, si escribo mucho se sale de la nota, también si dos muchos enter afecta a las demas notas y desacomoda los botones -->

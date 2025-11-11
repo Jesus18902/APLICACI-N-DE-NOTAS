@@ -1,0 +1,173 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f4f4;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.contenedor {
+  display: flex;
+  height: 100vh;
+}
+
+/* --- MENÚ LATERAL --- */
+.menu {
+  background: #333;
+  color: white;
+  padding: 20px;
+  position: relative;
+}
+
+#botonMas {
+  background: #555;
+  color: white;
+  border: none;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#botonMas:hover {
+  background: #777;
+}
+
+/* --- MENÚ DE COLORES --- */
+.colores {
+  display: none;
+  margin-top: 20px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.colores.visible {
+  display: flex;
+}
+
+.color {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+  transition: transform 0.2s;
+}
+
+.color:hover {
+  transform: scale(1.2);
+}
+
+/* --- SECCIÓN DE NOTAS --- */
+.notas {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-content: flex-start;
+}
+
+/* --- NOTA INDIVIDUAL --- */
+.nota {
+  width: 200px;
+  min-height: 120px;
+  border-radius: 10px;
+  padding: 10px;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Fecha pequeña arriba */
+.nota .fecha {
+  font-size: 12px;
+  text-align: right;
+  color: #555;
+}
+
+/* Texto editable */
+.nota .texto {
+  min-height: 50px;
+  outline: none;
+}
+
+/* --- CONTENEDOR DE BOTONES (Editar + Eliminar) --- */
+.nota .botones {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Estilo general para ambos botones */
+.nota .botones button {
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+}
+
+/* Botón Editar */
+.nota .editar {
+  background: #333;
+}
+
+.nota .editar:hover {
+  background: #555;
+  transform: scale(1.05);
+}
+
+/* Botón Eliminar */
+.nota .eliminar {
+  background: #d63031;
+}
+
+.nota .eliminar:hover {
+  background: #ff7675;
+  transform: scale(1.05);
+}
+
+/* Asegura que el contenedor gestione el tamaño y el contenido interno */
+.nota {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* opcional: si quieres que las notas no aumenten indefinidamente */
+  max-height: 320px;
+  /* ajusta según prefieras */
+  box-sizing: border-box;
+}
+
+/* Texto editable: permite saltos de línea, quiebra palabras largas y añade scroll si hace falta */
+.nota .texto {
+  white-space: pre-wrap;
+  /* respeta saltos de línea y permite wrap */
+  overflow-wrap: anywhere;
+  /* fuerza quiebre de palabras largas */
+  word-break: break-word;
+  /* seguridad extra para navegadores antiguos */
+  overflow: auto;
+  /* aparece scroll cuando es necesario */
+  max-height: 180px;
+  /* altura máxima del área de texto (ajusta como quieras) */
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  /* permite que .texto crezca dentro de .nota */
+}
+
+/* Si quieres que los botones siempre queden visibles abajo, asegura separación */
+.nota .botones {
+  flex-shrink: 0;
+}
+
+.notas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  align-items: start;
+  /* asegura que items se alineen por su propia altura */
+}
